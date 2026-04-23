@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Secret</title>
+    <style>
+        body { background-color: #0b021d; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .container { background: linear-gradient(145deg, #2e0854, #4b0082); padding: 40px 30px; border-radius: 20px; text-align: center; color: white; box-shadow: 0 15px 50px rgba(0,0,0,0.8); width: 380px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        h2 { margin-bottom: 25px; letter-spacing: 2px; color: #d8b4fe; font-size: 22px; }
+        .decoder-box { background-color: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; margin-bottom: 20px; min-height: 60px; font-size: 18px; line-height: 1.5; color: #ff0055; border: 1px dashed #7e22ce; word-break: break-all; display: flex; align-items: center; justify-content: center; }
+        input { width: 90%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-weight: bold; outline: none; margin-bottom: 15px; }
+        .btn { background-color: #ff0055; color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background-color: #e6004d; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>ဘေဘီအတွက်လျှို့ဝှက်ချက်အထဲမှာ ရှိတယ်</h2>
+        <div id="output-text" class="decoder-box">🎁🎁🎁🎁🎁🎁🎁</div>
+        
+        <input type="password" id="input-box" placeholder="...Enter Your Password..." autocomplete="off">
+        <button id="decode-btn" class="btn">လျှို့ဝှက်ချက်သိချင်ရင်နှိပ်ပါ</button>
+    </div>
+
+    <script>
+        const outputText = document.getElementById('output-text');
+        const inputBox = document.getElementById('input-box');
+        const decodeBtn = document.getElementById('decode-btn');
+        
+        const password = "362024";
+        const message = "ဘေဘီကို ကိုယ်အရမ်းချစ်တယ်ဆိုတာ သိလား? 😘❤️😘ဒါမယ့်ကိုယ်တို့လမ်းခွဲကြရအောင်🥺ကိုယ့်ကိုမေ့လိုက်ပါတော့နော် 😔";
+        const chars = "!<>-_\\/[]{}—=+*^?#________";
+       
+        let frameRequest;
+
+        function scramble(targetText) {
+            let iteration = 0;
+            clearInterval(frameRequest);
+
+            frameRequest = setInterval(() => {
+                outputText.innerText = targetText
+                    .split("")
+                    .map((letter, index) => {
+                        // စာလုံးအမှန် မပေါ်ခင်မှာ Random သင်္ကေတတွေ ပြနေမယ်
+                        if (index < iteration) {
+                            return targetText[index];
+                        }
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join("");
+
+                if (iteration >= targetText.length) {
+                    clearInterval(frameRequest);
+                }
+                
+                iteration += 1 / 3;
+            }, 30);
+        }
+
+        decodeBtn.addEventListener('click', () => {
+            let val = inputBox.value.toUpperCase().trim();
+            
+            if (val === password) {
+                outputText.style.color = "#00ffcc";
+                scramble(message); // Password မှန်မှ Animation စမယ်
+            } else {
+                outputText.style.color = "#ffcc00";
+                outputText.innerText = "မှားနေတယ် ဘေဘီရေ 🙄";
+                // ၃ စက္ကန့်နေရင် Box ကို ပြန်ဖျောက်ထားမယ်
+                setTimeout(() => {
+                    outputText.innerText = "";
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
