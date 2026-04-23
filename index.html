@@ -16,6 +16,10 @@
 </head>
 <body>
 
+    <audio id="bg-music" preload="auto">
+        <source src="https://www.image2url.com/r2/default/audio/1776954814957-aa4cc53f-fdb1-49b7-9fec-77f8245600cc.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="container">
         <h2>ဘေဘီအတွက်လျှို့ဝှက်ချက်အထဲမှာ ရှိတယ်</h2>
         <div id="output-text" class="decoder-box">🎁🎁🎁🎁🎁🎁🎁</div>
@@ -28,6 +32,7 @@
         const outputText = document.getElementById('output-text');
         const inputBox = document.getElementById('input-box');
         const decodeBtn = document.getElementById('decode-btn');
+        const bgMusic = document.getElementById('bg-music');
         
         const password = "362024";
         const message = "ဘေဘီကို ကိုယ်အရမ်းချစ်တယ်ဆိုတာ သိလား? 😘❤️😘ဒါမယ့်ကိုယ်တို့လမ်းခွဲကြရအောင်🥺ကိုယ့်ကိုမေ့လိုက်ပါတော့နော် 😔";
@@ -43,7 +48,6 @@
                 outputText.innerText = targetText
                     .split("")
                     .map((letter, index) => {
-                        // စာလုံးအမှန် မပေါ်ခင်မှာ Random သင်္ကေတတွေ ပြနေမယ်
                         if (index < iteration) {
                             return targetText[index];
                         }
@@ -53,6 +57,10 @@
 
                 if (iteration >= targetText.length) {
                     clearInterval(frameRequest);
+                    // Matrix Animation ပြီးသွားတဲ့အခါ အသံကို ပွင့်စေမယ်
+                    bgMusic.muted = false;
+                    bgMusic.currentTime = 0; // သီချင်းကို အစကနေ ပြန်စဖွင့်မယ်
+                    bgMusic.play().catch(e => console.log("Playback failed:", e));
                 }
                 
                 iteration += 1 / 3;
@@ -63,14 +71,21 @@
             let val = inputBox.value.toUpperCase().trim();
             
             if (val === password) {
-                outputText.style.color = "#00ffcc";
-                scramble(message); // Password မှန်မှ Animation စမယ်
+                // ခလုတ်နှိပ်လိုက်တဲ့အချိန်မှာ သီချင်းကို Muted အနေနဲ့ စပြီး Load လုပ်ထားမယ်
+                bgMusic.muted = true;
+                bgMusic.play().then(() => {
+                    outputText.style.color = "#00ffcc";
+                    scramble(message);
+                }).catch(e => {
+                    // Browser က play ခွင့်မပေးရင်လည်း animation တော့ ပြမယ်
+                    outputText.style.color = "#00ffcc";
+                    scramble(message);
+                });
             } else {
                 outputText.style.color = "#ffcc00";
                 outputText.innerText = "မှားနေတယ် ဘေဘီရေ 🙄";
-                // ၃ စက္ကန့်နေရင် Box ကို ပြန်ဖျောက်ထားမယ်
                 setTimeout(() => {
-                    outputText.innerText = "";
+                    outputText.innerText = "🎁🎁🎁🎁🎁🎁🎁";
                 }, 3000);
             }
         });
